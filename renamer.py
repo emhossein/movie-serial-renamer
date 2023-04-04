@@ -58,13 +58,16 @@ class App(tk.Tk):
         # Loop through the files and rename them
         for file in files:
             # Extract the season and episode numbers from the file name
-            match = re.search(r"S(\d+)E(\d+)", file, re.IGNORECASE)
+            match = re.search(r"S(\d+)E(\d+)(E\d+)*", file, re.IGNORECASE)
             if match:
                 season = match.group(1)
-                episode = match.group(2)
+                episodes = [match.group(2)]
+                if match.group(3):
+                    episodes.extend(match.group(3).split('E'))
+                episode_str = '&'.join(episodes)
 
                 # Generate the new file name
-                new_name = f"{self.prefix_entry.get()} S{season.zfill(2)}E{episode.zfill(2)}.{os.path.splitext(file)[1].lstrip('.')}"
+                new_name = f"{self.prefix_entry.get()} S{season.zfill(2)}E{episode_str}.{os.path.splitext(file)[1].lstrip('.')}"
 
                 # Get the full path of the file
                 old_path = os.path.join(folder_path, file)
